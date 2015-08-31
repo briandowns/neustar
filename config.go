@@ -2,9 +2,7 @@ package neustar
 
 import (
 	"crypto/md5"
-	"encoding/json"
 	"fmt"
-	"os"
 	"strconv"
 	"time"
 )
@@ -16,6 +14,16 @@ type Configuration struct {
 		Secret string `json:"secret"`
 	} `json:"api"`
 }
+
+// Configuration contains configuration.. duh
+/*
+type Configuration struct {
+	API struct {
+		Key    string `json:"key"`
+		Secret string `json:"secret"`
+	} `json:"api"`
+}
+*/
 
 // DigitalSignature creates an MD5 hash of the key, the secret and a timestamp
 func (c *Configuration) DigitalSignature() string {
@@ -30,6 +38,15 @@ func (c *Configuration) DigitalSignature() string {
 }
 
 // LoadConfig builds a config obj
+func LoadConfig(key, secret string) *Configuration {
+	return &Configuration{
+		Key:    key,
+		secret: secret,
+	}
+}
+
+// LoadConfig builds a config obj
+/*
 func LoadConfig(cf string) (*Configuration, error) {
 	confFile, err := os.Open(cf)
 	if err != nil {
@@ -43,3 +60,4 @@ func LoadConfig(cf string) (*Configuration, error) {
 	}
 	return conf, nil
 }
+*/
