@@ -10,9 +10,9 @@ import (
 // Configuration contains configuration.. duh
 type Configuration struct {
 	API struct {
-		Key    string `json:"key"`
-		Secret string `json:"secret"`
-	} `json:"api"`
+		Key    string
+		Secret string
+	}
 }
 
 // Configuration contains configuration.. duh
@@ -40,8 +40,10 @@ func (c *Configuration) DigitalSignature() string {
 // LoadConfig builds a config obj
 func LoadConfig(key, secret string) *Configuration {
 	return &Configuration{
-		Key:    key,
-		secret: secret,
+		API: struct {
+			Key:    key,
+			secret: secret,
+		}
 	}
 }
 
