@@ -121,7 +121,7 @@ type Monitor struct {
 // NewMonitor creates a new Monitoring object
 func NewMonitor(key, secret string) *Monitoring {
 	return &Monitoring{
-		config: LoadConfig(key, secret)
+		config: LoadConfig(key, secret),
 	}
 }
 
