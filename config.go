@@ -7,12 +7,15 @@ import (
 	"time"
 )
 
+// API holds the provided access keys
+type API struct {
+	Key    string
+	Secret string
+}
+
 // Configuration contains configuration.. duh
 type Configuration struct {
-	API struct {
-		Key    string
-		Secret string
-	}
+	API
 }
 
 // Configuration contains configuration.. duh
@@ -40,10 +43,10 @@ func (c *Configuration) DigitalSignature() string {
 // LoadConfig builds a config obj
 func LoadConfig(key, secret string) *Configuration {
 	return &Configuration{
-		API: struct {
+		API{
 			Key:    key,
-			secret: secret,
-		}
+			Secret: secret,
+		},
 	}
 }
 
