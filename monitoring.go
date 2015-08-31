@@ -119,9 +119,9 @@ type Monitor struct {
 }
 
 // NewMonitor creates a new Monitoring object
-func NewMonitor(config *Configuration) *Monitoring {
+func NewMonitor(key, secret string) *Monitoring {
 	return &Monitoring{
-		config: config,
+		config: LoadConfig(key, secret)
 	}
 }
 
