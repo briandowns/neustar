@@ -7,12 +7,15 @@ import (
 )
 
 const (
-	// MonitorURI is the endpoint for calls to the monitoring API
+	// ScriptURI is the endpoint for calls to the scripting API
 	ScriptURI = "alert/1.0"
 
 	// PolicyURI is the endpoint for policy calls
 	PolicyURI = "/policy"
 )
+
+// Strikes is a slice of valid strikes
+var Strikes = []int{1, 2, 3}
 
 // Script holds a representation of a script
 type Script struct {
@@ -89,13 +92,23 @@ func NewScript(key, secret string) *Scripting {
 	}
 }
 
+// ScriptDataResponse holds the return from the API list call
+type ScriptDataResponse struct {
+	Data struct {
+		Total  int                     `json:"total"`
+		Offset int                     `json:"offset"`
+		More   bool                    `json:"more"`
+		Items  []ScriptingListResponse `json:"items"`
+	} `json:"data"`
+}
+
 // Create creates a new Alert policy
 func (s *Scripting) Create() {}
 
 // List retrieves a list of policies ordered by date in descending order.
-func (s *Scripting) List() ([]Script, int, error) {
+func (s *Scripting) List() ([]ScriptingListResponse, int, error) {
 	var response *http.Response
-	var data map[string]map[string][]ScriptingListRepsonse
+	var data ScriptDataResponse
 	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, ScriptURI, s.config.API.Key, s.config.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
@@ -104,5 +117,15 @@ func (s *Scripting) List() ([]Script, int, error) {
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
 		return nil, response.StatusCode, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data.Data.Items, response.StatusCode, nil
+}
+
+// ValidStrikes makes sure that the given strike is valid
+func ValidStrikes(strike int) bool {
+	for _, i := range Strikes {
+		if i == strike {
+			return true
+		}
+	}
+	return false
 }
