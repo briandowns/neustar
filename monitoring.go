@@ -151,8 +151,13 @@ type PopSettings struct {
 }
 
 // Monitoring holds monitoring config
+//type Monitoring struct {
+//	config *Configuration
+//}
+
+// Monitoring holds monitoring config
 type Monitoring struct {
-	config *Configuration
+	neustar *Neustar
 }
 
 // Monitor hold monitoring data
@@ -203,9 +208,16 @@ type Monitor struct {
 }
 
 // NewMonitor creates a new Monitoring object
-func NewMonitor(key, secret string) *Monitoring {
+//func NewMonitor(key, secret string) *Monitoring {
+//	return &Monitoring{
+//		config: LoadConfig(key, secret),
+//	}
+//}
+
+// NewMonitor creates a new Monitoring object
+func NewMonitor(neustar *Neustar) *Monitoring {
 	return &Monitoring{
-		config: LoadConfig(key, secret),
+		neustar: neustar,
 	}
 }
 
@@ -220,7 +232,7 @@ func (m *Monitoring) Create() {}
 func (m *Monitoring) List() ([]Monitor, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]Monitor
-	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, m.config.API.Key, m.config.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
