@@ -149,18 +149,18 @@ func (m *Monitoring) List() ([]Monitor, int, error) {
 
 // Get retrieves information for a specific monitor associated with your
 // account. The monitor id that is returned is used to make other api calls.
-func (m *Monitoring) Get(id string) ([]Monitor, int, error) {
+func (m *Monitoring) Get(id string) (Monitor, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]Monitor
 	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, id, m.config.API.Key, m.config.DigitalSignature()))
 	if err != nil {
-		return nil, response.StatusCode, err
+		return Monitor{}, response.StatusCode, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return Monitor{}, response.StatusCode, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data["data"]["items"][0], response.StatusCode, nil
 }
 
 // Update changes some or all of the parameters of an existing monitor.
