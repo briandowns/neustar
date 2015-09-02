@@ -151,11 +151,6 @@ type PopSettings struct {
 }
 
 // Monitoring holds monitoring config
-//type Monitoring struct {
-//	config *Configuration
-//}
-
-// Monitoring holds monitoring config
 type Monitoring struct {
 	neustar *Neustar
 }
@@ -206,13 +201,6 @@ type Monitor struct {
 	PortSettings PortSettings `json:"portSettings,omitempty"`
 	PingSettings PingSettings `json:"pingSettings"`
 }
-
-// NewMonitor creates a new Monitoring object
-//func NewMonitor(key, secret string) *Monitoring {
-//	return &Monitoring{
-//		config: LoadConfig(key, secret),
-//	}
-//}
 
 // NewMonitor creates a new Monitoring object
 func NewMonitor(neustar *Neustar) *Monitoring {

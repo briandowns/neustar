@@ -82,13 +82,13 @@ type ScriptCreateParameters struct {
 
 // Scripting holds scripting config
 type Scripting struct {
-	config *Configuration
+	neustar *Neustar
 }
 
 // NewScript creates a new Scripting object
-func NewScript(key, secret string) *Scripting {
+func NewScript(neustar *Neustar) *Scripting {
 	return &Scripting{
-		config: LoadConfig(key, secret),
+		neustar: neustar,
 	}
 }
 
@@ -109,7 +109,7 @@ func (s *Scripting) Create() {}
 func (s *Scripting) List() ([]ScriptingListResponse, int, error) {
 	var response *http.Response
 	var data ScriptDataResponse
-	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, ScriptURI, s.config.API.Key, s.config.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, ScriptURI, s.neustar.Key, s.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}

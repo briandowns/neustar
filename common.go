@@ -24,10 +24,7 @@ type ReturnedAPIError struct {
 
 // Neustar holds the provided access keys
 type Neustar struct {
-	// Neustar API key
-	Key string
-
-	// Neustar API secret
+	Key    string
 	Secret string
 }
 
