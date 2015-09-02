@@ -327,10 +327,31 @@ func (m *Monitoring) Locations() ([]string, int, error) {
 }
 
 // ValidMonitorType validates the given monitor type is valid
-func ValidMonitorType(monitorType string) bool { return false }
+func ValidMonitorType(monitorType string) bool {
+	for _, i := range MonitorTypes {
+		if i == monitorType {
+			return true
+		}
+	}
+	return false
+}
 
 // ValidBrowserType validates the given browser type is valid
-func ValidBrowserType(browserType string) bool { return false }
+func ValidBrowserType(browserType string) bool {
+	for _, i := range BrowserTypes {
+		if i == browserType {
+			return true
+		}
+	}
+	return false
+}
 
 // ValidUpdateInterval validates the given interval is valid
-func ValidUpdateInterval(interval int) bool { return false }
+func ValidUpdateInterval(interval int) bool {
+	for _, i := range UpdateIntervals {
+		if i == interval {
+			return true
+		}
+	}
+	return false
+}
