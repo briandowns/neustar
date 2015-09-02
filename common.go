@@ -31,6 +31,7 @@ type Neustar struct {
 	Secret string
 }
 
+// NewNeustar creates a new Neustar object
 func NewNeustar(key, secret string) *Neustar {
 	return &Neustar{
 		Key:    key,

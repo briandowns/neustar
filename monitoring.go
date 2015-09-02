@@ -248,7 +248,7 @@ func (m *Monitoring) List() ([]Monitor, int, error) {
 func (m *Monitoring) Get(id string) ([]Monitor, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]Monitor
-	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, id, m.config.API.Key, m.config.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, id, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -267,7 +267,7 @@ func (m *Monitoring) Update() {}
 // all its monitoring data.
 func (m *Monitoring) Delete(id string) (int, error) {
 	var response *http.Response
-	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, id, m.config.API.Key, m.config.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, id, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return response.StatusCode, err
 	}
@@ -287,7 +287,7 @@ func (m *Monitoring) Delete(id string) (int, error) {
 func (m *Monitoring) Samples() ([]string, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]string
-	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, m.config.API.Key, m.config.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -307,7 +307,7 @@ func (m *Monitoring) RawSampleData(monitorID, sampleID string) {}
 // performing the aggregation yourself.
 func (m *Monitoring) AggregateSampleData(monitorID string, asd AggregateSampleDataResponse) (int, error) {
 	var response *http.Response
-	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, m.config.API.Key, m.config.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return response.StatusCode, err
 	}
@@ -327,7 +327,7 @@ func (m *Monitoring) Summary(monitorID string) {}
 func (m *Monitoring) Locations() ([]string, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]string
-	response, err := http.Get(fmt.Sprintf("%s%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, LocationsURI, m.config.API.Key, m.config.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf("%s%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, LocationsURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
