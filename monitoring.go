@@ -169,7 +169,7 @@ func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, int, erro
 	var response *http.Response
 	var data map[string]map[string][]SummaryDataResponse
 	response, err := http.Get(fmt.Sprintf(
-		"%s%s/%s/%s?apikey=%s&sig=%s",
+		"%s%s/%s%s?apikey=%s&sig=%s",
 		BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
