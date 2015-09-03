@@ -26,85 +26,6 @@ var BrowserTypes = []string{"FF", "CHROME", "IE"}
 // UpdateIntervals is a slice of valid intervals
 var UpdateIntervals = []int{1, 2, 3, 4, 5, 10, 15, 20, 30, 60}
 
-// UpdateMonitorParameters holds the allowed options for updating
-// a monitor
-type UpdateMonitorParameters struct {
-	Name        string `json:"name"`
-	Description string `json:"name"`
-	Interval    int    `json:"interval"`
-	TestScript  string `json:"testScript"`
-	Locations   string `json:"locations"`
-	AlertPolicy string `json:"alertPolicy"`
-	Browser     string `json:"browser"`
-	Active      string `json:"Active"`
-}
-
-// CreateMonitorParameters holds the parameters needed by the create
-// monitor endpoint
-type CreateMonitorParameters struct {
-	// The name of the monitor
-	Name string `json:"name"`
-
-	// A description of what this monitor is for
-	Description string `json:"description"`
-
-	// How often the monitoring script will run for each of the locations
-	Interval int `json:"interval"`
-
-	// The id of the test script that this monitor should run
-	TestScript string `json:"testScript"`
-
-	// A CSV list of locations that this monitor should run from
-	Locations string `json:"Locations"`
-
-	// The id of the alert policy that this monitor should run
-	AlertPolicy string `json:"alertPolicy"`
-
-	// Specifies the browser type that this monitor should use. Note: IE is
-	// available for Enterprise customers only
-	Browser string `json:"browser"`
-
-	// Enables or disables this monitor from taking samples
-	Active string `json:"active"`
-
-	// Set to network monitor type such as 'dns'. See related settings below.
-	// Leave this blank for script-based monitors. Note: this interface will
-	// not allow you to test network monitor creation. Please use your API client.
-	Type string `json:"type"`
-
-	DNSSettings  DNSSettings  `json:"dnsSettings"`
-	PingSettings PingSettings `json:"pingSettings"`
-	PopSettings  PopSettings  `json:"popSettings"`
-	PortSettings PortSettings `json:"portSettings"`
-	SMTPSettings SMTPSettings `json:"smtpSettings"`
-}
-
-// AggregateParameters holds the allowed options for getting
-// aggregate sample data
-type AggregateParameters struct {
-	StartDate string `json:"startDate"`
-	EndDate   string `json:"endDate"`
-	Offset    int    `json:"offset"`
-	Frequency string `json:"frequency"`
-	GroupBy   string `json:"groupBy"`
-}
-
-// AggregateSampleDataResponse holds the returned data fro mthe call
-type AggregateSampleDataResponse struct {
-	Count      int         `json:"count"`
-	Uptime     float64     `json:"uptime"`
-	Min        int         `json:"min"`
-	Max        int         `json:"max"`
-	Date       interface{} `json:"date"`
-	Avg        float64     `json:"avg"`
-	STDDev     float64     `json:"stdDev"`
-	Location   string      `json:"location"`
-	StepName   string      `json:"stepName"`
-	StepNumber int         `json:"stepNumber"`
-	TP50       float64     `json:"tp50"`
-	TP90       float64     `json:"tp90"`
-}
-
 // DNSSettings is a an object containing all DNS-related settings:
 // {"timeout": int, "lookups": array}. The "lookups" array contains
 // JSON objects with this format: {"lookupType": string ("A" or "AAAA"),
@@ -309,7 +230,21 @@ func (m *Monitoring) AggregateSampleData(monitorID string, asd AggregateSampleDa
 // list of monitors in the web portal. This includes things such as the average load
 // time, sample count and uptime for the day, week, month or year, the last time an
 // error occurred, and the last error message.
-func (m *Monitoring) Summary(monitorID string) {}
+func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, int, error) {
+	var response *http.Response
+	var data map[string]map[string][]SummaryDataResponse
+	// api.neustar.biz/performance/monitor/1.0/4bbf505a660d11e49a049848e167c3b7/summary?apikey=220.1.5165be2de4b0023cbfd49a6c.nAAxuieLM&sig=565377b2e7aae26ab73cb5e99474a27c
+
+	response, err := http.Get(fmt.Sprintf("%s%s/%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature()))
+	if err != nil {
+		return nil, response.StatusCode, err
+	}
+	defer response.Body.Close()
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+		return nil, response.StatusCode, err
+	}
+	return data["data"]["items"], response.StatusCode, nil
+}
 
 // Locations gets a list of all monitoring locations available
 func (m *Monitoring) Locations() ([]string, int, error) {
