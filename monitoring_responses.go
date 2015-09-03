@@ -186,6 +186,6 @@ type SummaryDataResponse struct {
 	// When the last error occured
 	LastErrorAt      string `json:"lastErrorAt"`
 	LastErrorID      string `json:"lastErrorId"`
-	LastErrorType    int    `json:"lastErrorType"`
-	LastErrorMessage int    `json:"lastErrorMessage"`
+	LastErrorType    string `json:"lastErrorType"`
+	LastErrorMessage string `json:"lastErrorMessage"`
 }
