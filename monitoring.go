@@ -168,6 +168,8 @@ func (m *Monitoring) AggregateSampleData(monitorID string, asp *AggregateSampleP
 func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]SummaryDataResponse
+	endpoint := fmt.Sprintf("%s%s/%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature())
+	fmt.Println(endpoint)
 	response, err := http.Get(fmt.Sprintf(
 		"%s%s/%s%s?apikey=%s&sig=%s",
 		BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature()))
