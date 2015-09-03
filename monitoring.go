@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/google/go-querystring/query"
 )
 
 const (
@@ -13,8 +15,11 @@ const (
 	// LocationsURI is the endpoint for locations calls
 	LocationsURI = "/locations"
 
-	// SummaryURI is the summary endpoint for summary calls
+	// SummaryURI is the endpoint for summary calls
 	SummaryURI = "/summary"
+
+	// AggregateURI is the endpoint for aggregate calls
+	AggregateURI = "/aggregate"
 )
 
 // MonitorTypes is a slice of valid monitor types
@@ -26,101 +31,15 @@ var BrowserTypes = []string{"FF", "CHROME", "IE"}
 // UpdateIntervals is a slice of valid intervals
 var UpdateIntervals = []int{1, 2, 3, 4, 5, 10, 15, 20, 30, 60}
 
-// DNSSettings is a an object containing all DNS-related settings:
-// {"timeout": int, "lookups": array}. The "lookups" array contains
-// JSON objects with this format: {"lookupType": string ("A" or "AAAA"),
-// "authoritative": boolean, "hostname": string, "dnsServer": string, "expectedIps":
-// string of comma-separated IP addresses}
-type DNSSettings struct {
-	LookupType    string `json:"lookupType"`
-	Authoritative bool   `json:"authoritative"`
-	Hostname      string `json:"hostname"`
-	DNSServer     string `json:"dnsServer"`
-	ExpectedIPs   string `json:"expectedIps"`
-}
+// AggregateSampleDataFrequency is a slice of valid frequencies
+var AggregateSampleDataFrequency = []string{"day", "hour"}
 
-// PingSettings is an object containing all PING-related settings: {"timeout": int, "host": string}.
-type PingSettings struct {
-	Timeout int    `json:"timeout"`
-	Host    string `json:"host"`
-}
-
-// PortSettings holds port settings
-type PortSettings struct {
-	Timeout          int    `json:"timeout"`
-	Server           string `json:"server"`
-	Port             int    `json:"port"`
-	Protocol         string `json:"protocol"`
-	Command          string `json:"command"`
-	ExpectedResponse string `json:"expected_response"`
-	DataFormat       string `json:"data_format"`
-}
-
-// SMTPSettings holds SMTP setttings
-type SMTPSettings struct {
-	Timeout int    `json:"timeout"`
-	Server  string `json:"server"`
-	Email   string `json:"email"`
-}
-
-// PopSettings holds port settings
-type PopSettings struct {
-	Timeout  int    `json:"timeout"`
-	Server   string `json:"server"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
+// AggregateSampleGroupBy is a slice of valid groupBy parameters
+var AggregateSampleGroupBy = []string{"location", "step"}
 
 // Monitoring holds monitoring config
 type Monitoring struct {
 	neustar *Neustar
-}
-
-// Monitor hold monitoring data
-type Monitor struct {
-	// The ID of the monitor
-	ID string `json:"id"`
-
-	// The ID of the alerting policy associated with this monitor
-	AlertPolicy interface{} `json:"alertPolicy"`
-
-	// A list of monitoring locations that this monitor is run from
-	Locations []string `json:"locations"`
-
-	// The version, id and name of the script associated with this monitor
-	Script Script `json:"script"`
-
-	// The description of the monitor
-	Description string `json:"description"`
-
-	// How often this monitor runs
-	Interval int `json:"interval"`
-
-	// The name of this monitor
-	Name string `json:"name"`
-
-	// The time of the last monitoring sample for this monitor
-	LastSampleAt interface{} `json:"lastSampleAt"`
-
-	// Describes whether this monitor is actively monitoring or not
-	Active bool `json:"active"`
-
-	// Whether this monitor is in a maintenance window or not
-	InMaintenanceWindow bool `json:"inMaintenanceWindow"`
-
-	// Describes the type of browser that monitor is using, 'FF' for
-	// Firefox or 'CHROME' for Chrome, or 'IE' for Internet Explorer
-	Browser string `json:"browser"`
-
-	// The type of monitor ('RealBrowserUser', 'VirtualUser', 'dns')
-	Type string `json:"type"`
-
-	SMTPSettings SMTPSettings `json:"smtpSettings"`
-	SLASettings  interface{}  `json:"slaSettings,omitempty"`
-	DNSSettings  DNSSettings  `json:"dnsSettings,omitempty"`
-	PopSettings  PopSettings  `json:"popSettings,omitempty"`
-	PortSettings PortSettings `json:"portSettings,omitempty"`
-	PingSettings PingSettings `json:"pingSettings"`
 }
 
 // NewMonitor creates a new Monitoring object
@@ -214,16 +133,22 @@ func (m *Monitoring) RawSampleData(monitorID, sampleID string) {}
 // of time. You can choose to aggregate the data for each hour or each day. This is
 // more effecient than getting all the individual samples for a period of time and
 // performing the aggregation yourself.
-func (m *Monitoring) AggregateSampleData(monitorID string, asd AggregateSampleDataResponse) (int, error) {
+func (m *Monitoring) AggregateSampleData(monitorID string, asp *AggregateSampleParameters) ([]AggregateSampleDataResponse, int, error) {
 	var response *http.Response
-	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, m.neustar.Key, m.neustar.DigitalSignature()))
+	v, err := query.Values(asp)
 	if err != nil {
-		return response.StatusCode, err
+		return nil, 0, err
 	}
-	if response.StatusCode != 200 {
-		return response.StatusCode, nil
+	var data map[string]map[string][]AggregateSampleDataResponse
+	response, err = http.Get(fmt.Sprintf("%s%s/%s%s?%s&apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, AggregateURI, v.Encode(), m.neustar.Key, m.neustar.DigitalSignature()))
+	if err != nil {
+		return nil, response.StatusCode, err
 	}
-	return response.StatusCode, nil
+	defer response.Body.Close()
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+		return nil, response.StatusCode, err
+	}
+	return data["data"]["items"], response.StatusCode, nil
 }
 
 // Summary provides the monitor summary api returns all of the data that is found when looking at your
@@ -233,8 +158,6 @@ func (m *Monitoring) AggregateSampleData(monitorID string, asd AggregateSampleDa
 func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]SummaryDataResponse
-	// api.neustar.biz/performance/monitor/1.0/4bbf505a660d11e49a049848e167c3b7/summary?apikey=220.1.5165be2de4b0023cbfd49a6c.nAAxuieLM&sig=565377b2e7aae26ab73cb5e99474a27c
-
 	response, err := http.Get(fmt.Sprintf("%s%s/%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
@@ -285,6 +208,26 @@ func ValidBrowserType(browserType string) bool {
 func ValidUpdateInterval(interval int) bool {
 	for _, i := range UpdateIntervals {
 		if i == interval {
+			return true
+		}
+	}
+	return false
+}
+
+// ValidAggregateSampleDataFrequency validates the given frequency is valid
+func ValidAggregateSampleDataFrequency(frequency string) bool {
+	for _, i := range AggregateSampleDataFrequency {
+		if i == frequency {
+			return true
+		}
+	}
+	return false
+}
+
+// ValidAggregateSampleGroupBy validates the given groupBy is valid
+func ValidAggregateSampleGroupBy(groupBy string) bool {
+	for _, i := range AggregateSampleGroupBy {
+		if i == frequency {
 			return true
 		}
 	}

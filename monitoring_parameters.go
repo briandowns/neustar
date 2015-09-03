@@ -53,12 +53,23 @@ type CreateMonitorParameters struct {
 	SMTPSettings SMTPSettings `json:"smtpSettings"`
 }
 
-// AggregateParameters holds the allowed options for getting
+// AggregateSampleParameters holds the allowed options for getting
 // aggregate sample data
-type AggregateParameters struct {
+type AggregateSampleParameters struct {
+	// An ISO 8601 formatted date string or datetime string representing the
+	// start date from which you wish to collect samples. Examples: 2012-03-02 or 2012-03-01T12:00
 	StartDate string `json:"startDate"`
-	EndDate   string `json:"endDate"`
-	Offset    int    `json:"offset"`
+
+	// An ISO 8601 formatted date string or datetime string representing the
+	// end date from which you wish to collect samples. Examples: 2012-03-02 or 2012-03-01T12:00
+	EndDate string `json:"endDate"`
+
+	// From which position in the return list you wish to start. At most, 2000 records will be returned.
+	Offset int `json:"offset"`
+
+	// Aggregation period ('day', 'hour')
 	Frequency string `json:"frequency"`
-	GroupBy   string `json:"groupBy"`
+
+	// When selected, the data will be aggregated by the selected 'groupBy'
+	GroupBy string `json:"groupBy"`
 }
