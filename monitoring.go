@@ -60,7 +60,9 @@ func (m *Monitoring) Create() {}
 func (m *Monitoring) List() ([]Monitor, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]Monitor
-	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf(
+		"%s%s?apikey=%s&sig=%s",
+		BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -76,7 +78,9 @@ func (m *Monitoring) List() ([]Monitor, int, error) {
 func (m *Monitoring) Get(id string) ([]Monitor, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]Monitor
-	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, id, m.neustar.Key, m.neustar.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf(
+		"%s%s/%s?apikey=%s&sig=%s",
+		BaseURL, MonitorURI, id, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -95,7 +99,9 @@ func (m *Monitoring) Update() {}
 // all its monitoring data.
 func (m *Monitoring) Delete(id string) (int, error) {
 	var response *http.Response
-	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, id, m.neustar.Key, m.neustar.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf(
+		"%s%s/%s?apikey=%s&sig=%s",
+		BaseURL, MonitorURI, id, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return response.StatusCode, err
 	}
@@ -115,7 +121,9 @@ func (m *Monitoring) Delete(id string) (int, error) {
 func (m *Monitoring) Samples() ([]string, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]string
-	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf(
+		"%s%s?apikey=%s&sig=%s",
+		BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -140,7 +148,9 @@ func (m *Monitoring) AggregateSampleData(monitorID string, asp *AggregateSampleP
 		return nil, 0, err
 	}
 	var data map[string]map[string][]AggregateSampleDataResponse
-	response, err = http.Get(fmt.Sprintf("%s%s/%s%s?%s&apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, AggregateURI, v.Encode(), m.neustar.Key, m.neustar.DigitalSignature()))
+	response, err = http.Get(fmt.Sprintf(
+		"%s%s/%s%s?%s&apikey=%s&sig=%s",
+		BaseURL, MonitorURI, monitorID, AggregateURI, v.Encode(), m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -158,7 +168,9 @@ func (m *Monitoring) AggregateSampleData(monitorID string, asp *AggregateSampleP
 func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]SummaryDataResponse
-	response, err := http.Get(fmt.Sprintf("%s%s/%s/%s?apikey=%s&sig=%s", BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf(
+		"%s%s/%s/%s?apikey=%s&sig=%s",
+		BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -173,7 +185,9 @@ func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, int, erro
 func (m *Monitoring) Locations() ([]string, int, error) {
 	var response *http.Response
 	var data map[string]map[string][]string
-	response, err := http.Get(fmt.Sprintf("%s%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, LocationsURI, m.neustar.Key, m.neustar.DigitalSignature()))
+	response, err := http.Get(fmt.Sprintf(
+		"%s%s%s?apikey=%s&sig=%s",
+		BaseURL, MonitorURI, LocationsURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
 		return nil, response.StatusCode, err
 	}
@@ -227,7 +241,7 @@ func ValidAggregateSampleDataFrequency(frequency string) bool {
 // ValidAggregateSampleGroupBy validates the given groupBy is valid
 func ValidAggregateSampleGroupBy(groupBy string) bool {
 	for _, i := range AggregateSampleGroupBy {
-		if i == frequency {
+		if i == groupBy {
 			return true
 		}
 	}
