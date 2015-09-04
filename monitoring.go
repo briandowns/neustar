@@ -141,24 +141,24 @@ func (m *Monitoring) RawSampleData(monitorID, sampleID string) {}
 // of time. You can choose to aggregate the data for each hour or each day. This is
 // more effecient than getting all the individual samples for a period of time and
 // performing the aggregation yourself.
-func (m *Monitoring) AggregateSampleData(monitorID string, asp *AggregateSampleParameters) ([]AggregateSampleDataResponse, int, error) {
+func (m *Monitoring) AggregateSampleData(monitorID string, asp *AggregateSampleParameters) ([]AggregateSampleResponse, error) {
 	var response *http.Response
 	v, err := query.Values(asp)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	var data map[string]map[string][]AggregateSampleDataResponse
+	var data AggregateSampleDataResponse
 	response, err = http.Get(fmt.Sprintf(
-		"%s%s/%s%s?%s&apikey=%s&sig=%s",
+		"%s%s/%s/%s?%s&apikey=%s&sig=%s",
 		BaseURL, MonitorURI, monitorID, AggregateURI, v.Encode(), m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data.Data.Items, nil
 }
 
 // Summary provides the monitor summary api returns all of the data that is found when looking at your

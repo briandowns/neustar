@@ -46,20 +46,28 @@ type PopSettings struct {
 	Password string `json:"password"`
 }
 
-// AggregateSampleDataResponse holds the returned data from the call
+// AggregateSampleDataResponse holds the return from the API list call
 type AggregateSampleDataResponse struct {
-	Count      int     `json:"count"`
-	Uptime     float64 `json:"uptime"`
-	Min        int     `json:"min"`
-	Max        int     `json:"max"`
-	Date       string  `json:"date"`
-	Avg        float64 `json:"avg"`
-	STDDev     float64 `json:"stdDev"`
-	Location   string  `json:"location"`
-	StepName   string  `json:"stepName"`
-	StepNumber int     `json:"stepNumber"`
-	TP50       float64 `json:"tp50"`
-	TP90       float64 `json:"tp90"`
+	Data struct {
+		Count int                       `json:"count"`
+		Items []AggregateSampleResponse `json:"items"`
+	} `json:"data"`
+}
+
+// AggregateSampleResponse holds the returned data from the call
+type AggregateSampleResponse struct {
+	Count      int    `json:"count"`
+	Uptime     string `json:"uptime"`
+	Min        int    `json:"min"`
+	Max        int    `json:"max"`
+	Date       string `json:"date"`
+	Avg        string `json:"avg"`
+	STDDev     string `json:"stdDev"`
+	Location   string `json:"location"`
+	StepName   string `json:"stepName"`
+	StepNumber int    `json:"stepNumber"`
+	TP50       int    `json:"tp50"`
+	TP90       int    `json:"tp90"`
 }
 
 // Monitor hold monitoring data
