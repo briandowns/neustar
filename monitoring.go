@@ -165,20 +165,20 @@ func (m *Monitoring) AggregateSampleData(monitorID string, asp *AggregateSampleP
 // list of monitors in the web portal. This includes things such as the average load
 // time, sample count and uptime for the day, week, month or year, the last time an
 // error occurred, and the last error message.
-func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, int, error) {
+func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, error) {
 	var response *http.Response
 	var data map[string]map[string][]SummaryDataResponse
 	response, err := http.Get(fmt.Sprintf(
 		"%s%s/%s%s?apikey=%s&sig=%s",
 		BaseURL, MonitorURI, monitorID, SummaryURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data["data"]["items"], nil
 }
 
 // Locations gets a list of all monitoring locations available
