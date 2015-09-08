@@ -1,6 +1,7 @@
 package neustar
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -52,7 +53,31 @@ func NewMonitor(neustar *Neustar) *Monitoring {
 // Create creates a new monitor and returns the monitor id of the newly
 // created monitor. Name, interval, testScript and locations are required.
 // Use the Get Monitoring Locations api to retrieve a list of monitoring locations.
-func (m *Monitoring) Create() {}
+func (m *Monitoring) Create(cmp *CreateMonitorParameters) (CreateMonitorResponse, error) {
+	buffer, err := json.Marshal(cmp)
+	if err != nil {
+		return CreateMonitorResponse{}, err
+	}
+	body := bytes.NewBuffer(buffer)
+	var data map[string]map[string]CreateMonitorResponse
+	request, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()),
+		body)
+	if err != nil {
+		return CreateMonitorResponse{}, err
+	}
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return CreateMonitorResponse{}, err
+	}
+	defer response.Body.Close()
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+		return CreateMonitorResponse{}, err
+	}
+	return data["data"]["items"], nil
+}
 
 // List retrieves a list of all monitors associated with your account,
 //along with information about each. The monitor id that is returned

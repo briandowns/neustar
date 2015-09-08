@@ -197,3 +197,9 @@ type SummaryDataResponse struct {
 	LastErrorType    string `json:"lastErrorType"`
 	LastErrorMessage string `json:"lastErrorMessage"`
 }
+
+// CreateMonitorResponse contains the response from a call to create a new monitor
+type CreateMonitorResponse struct {
+	ID      string `json:"bd220e6655d311e5ab659848e167c3b7"`
+	Created string `json:"2015-09-08T02:45:59.00"`
+}
