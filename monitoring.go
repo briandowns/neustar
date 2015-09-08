@@ -82,38 +82,38 @@ func (m *Monitoring) Create(cmp *CreateMonitorParameters) (CreateMonitorResponse
 // List retrieves a list of all monitors associated with your account,
 //along with information about each. The monitor id that is returned
 // is used to make other api calls.
-func (m *Monitoring) List() ([]Monitor, int, error) {
+func (m *Monitoring) List() ([]Monitor, error) {
 	var response *http.Response
 	var data map[string]map[string][]Monitor
 	response, err := http.Get(fmt.Sprintf(
 		"%s%s?apikey=%s&sig=%s",
 		BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data["data"]["items"], nil
 }
 
 // Get retrieves information for a specific monitor associated with your
 // account. The monitor id that is returned is used to make other api calls.
-func (m *Monitoring) Get(id string) ([]Monitor, int, error) {
+func (m *Monitoring) Get(id string) ([]Monitor, error) {
 	var response *http.Response
 	var data map[string]map[string][]Monitor
 	response, err := http.Get(fmt.Sprintf(
 		"%s%s/%s?apikey=%s&sig=%s",
 		BaseURL, MonitorURI, id, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data["data"]["items"], nil
 }
 
 // Update changes some or all of the parameters of an existing monitor.
@@ -143,20 +143,20 @@ func (m *Monitoring) Delete(id string) (int, error) {
 // returned, the 'more' field will be set to true and you can make another api call
 // specifying an offset which would be equal to the number of results returned in the
 // first api call plus the offset of that call.
-func (m *Monitoring) Samples() ([]string, int, error) {
+func (m *Monitoring) Samples() ([]string, error) {
 	var response *http.Response
 	var data map[string]map[string][]string
 	response, err := http.Get(fmt.Sprintf(
 		"%s%s?apikey=%s&sig=%s",
 		BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data["data"]["items"], nil
 }
 
 // RawSampleData retrieves the raw, HTTP Archive (HAR) data for a particular sample
@@ -207,20 +207,20 @@ func (m *Monitoring) Summary(monitorID string) ([]SummaryDataResponse, error) {
 }
 
 // Locations gets a list of all monitoring locations available
-func (m *Monitoring) Locations() ([]string, int, error) {
+func (m *Monitoring) Locations() ([]string, error) {
 	var response *http.Response
 	var data map[string]map[string][]string
 	response, err := http.Get(fmt.Sprintf(
 		"%s%s%s?apikey=%s&sig=%s",
 		BaseURL, MonitorURI, LocationsURI, m.neustar.Key, m.neustar.DigitalSignature()))
 	if err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return nil, err
 	}
-	return data["data"]["items"], response.StatusCode, nil
+	return data["data"]["items"], nil
 }
 
 // ValidMonitorType validates the given monitor type is valid
