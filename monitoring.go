@@ -67,6 +67,7 @@ func (m *Monitoring) Create(cmp *CreateMonitorParameters) (CreateMonitorResponse
 	if err != nil {
 		return CreateMonitorResponse{}, err
 	}
+	request.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
