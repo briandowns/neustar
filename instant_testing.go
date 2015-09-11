@@ -59,8 +59,8 @@ type InstantTestingByLocationResponse struct {
 	Screenshot string `json:"screenshot"`
 }
 
-// InstantTestingCreateResponse holds the response from the API on Instant Test
-// creation
+// InstantTestingCreateResponse holds the response from the API on Instant
+// Test creation
 type InstantTestingCreateResponse struct {
 	Data struct {
 		Items struct {
