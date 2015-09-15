@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/google/go-querystring/query"
+	"github.com/kr/pretty"
 )
 
 const (
@@ -174,6 +175,7 @@ func (m *Monitoring) RawSampleData(monitorID, sampleID string) (RawSampleDataRes
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
 		return RawSampleDataResponse{}, err
 	}
+	fmt.Printf("%# v\n", pretty.Formatter(data))
 	return data, nil
 }
 

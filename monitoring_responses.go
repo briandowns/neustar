@@ -208,115 +208,118 @@ type CreateMonitorResponse struct {
 // called
 type RawSampleDataResponse struct {
 	Data struct {
-		Status         string `json:"status"`
-		BytesReceived  int    `json:"bytesReceived"`
-		AgentIPAddress string `json:"agentIpAddress"`
-		Browser        string `json:""`
-		ScriptInfo     struct {
-			LineNumber int    `json:"lineNumber"`
-			ScriptName string `json:"scriptName"`
-			ScriptBody string `json:"scriptBody"`
-		} `json:"scriptInfo"`
-		StatusCode int      `json:"statusCode"`
-		Items      []string `json:"items"`
-		ScriptName string   `json:"scriptName"`
-		Location   string   `json:"location"`
-		StartTime  string   `json:"startTime"`
-		Offset     int      `json:"offset"`
-		Duration   string   `json:"duration"`
-		Total      int      `json:"total"`
-		Data       struct {
-			MonitorID  string `json:"monitorId"`
-			ScreenShot string `json:"screenshot"`
-			HAR        struct {
+		AgentIPAddr   string `json:"agentIpAddr"`
+		Browser       string `json:"browser"`
+		BytesReceived int    `json:"bytesReceived"`
+		Data          struct {
+			Har struct {
 				Log struct {
-					Creator struct {
-						Version string `json:"version"`
+					Steps []struct {
+						Duration       int           `json:"duration"`
+						Label          string        `json:"label"`
+						NameValuePairs []interface{} `json:"nameValuePairs"`
+						StartTime      string        `json:"startTime"`
+						Step           int           `json:"step"`
+						TimePaused     int           `json:"timePaused"`
+					} `json:"_steps"`
+					Browser struct {
 						Name    string `json:"name"`
+						Version string `json:"version"`
+					} `json:"browser"`
+					Creator struct {
+						Name    string `json:"name"`
+						Version string `json:"version"`
 					} `json:"creator"`
-				} `json:"log"`
-				Steps []struct {
-					TimePaused     int           `json:"timePaused"`
-					NameValuePairs []interface{} `json:"nameValuePairs"`
-					Label          string        `json:"label"`
-					Step           int           `json:"step"`
-					StartTime      string        `json:"startTime"`
-					Duration       int           `json:"duration"`
-				} `json:"_steps"`
-				Version  string `json:"version"`
-				Location string `json:"location"`
-				Entries  []struct {
-					ServerIPAddress string `json:"serverIpAddress"`
-					PageRef         string `json:"pageref"`
-					StartedDatetime string `json:"startedDateTime"`
-					WSID            int    `json:"_wsid"`
-					Request         struct {
-						Cookies     []interface{} `json:"cookies"`
-						URL         string        `json:"url"`
-						QueryString []interface{} `json:"queryString"`
-						Headers     []struct {
-							Name  string `json:"name"`
-							Value string `json:"value"`
-						} `json:"headers"`
-						HeaderSize  int    `json:"headerSize"`
-						HTTPVersion string `json:"httpVersion"`
-						Method      string `json:"method"`
-						BodySize    int    `json:"bodySize"`
-					} `json:"request"`
-					Timings struct {
-						Receive int `json:"receive"`
-						Send    int `json:"send"`
-						SSL     int `json:"ssl"`
-						Connect int `json:"connect"`
-						DNS     int `json:"dns"`
-						Wait    int `json:"wait"`
-						Blocked int `json:"blocked"`
-					} `json:"timings"`
-					Cache    struct{} `json:"cache"`
-					Time     int      `json:"time"`
-					Response struct {
-						Status  int `json:"status"`
-						Cookies []struct {
-							Path    string `json:"path"`
-							Expires string `json:"expires"`
-							Name    string `json:"name"`
-							Value   string `json:"value"`
-						} `json:"cookies"`
-						StatusText string `json:"statusText"`
-						Content    struct {
-							MimeType string `json:"mimeType"`
-							Size     int    `json:"size"`
-						} `json:"content"`
-						Headers []struct {
-							Name  string `json:"name"`
-							Value string `json:"value"`
-						} `json:"headers"`
-						HeaderSize  int    `json:"headerSize"`
-						RedirectURL string `json:"redirectURL"`
-						HTTPVersion int    `json:"httpVersion"`
-						BodySize    int    `json:"bodySize"`
-					} `json:"response"`
-				} `json:"entries"`
-				Pages []struct {
-					ID              string `json:"id"`
-					StartedDateTime string `json:"startedDateTime"`
-					PageTimings     []struct {
-						DOMContentLoadedEventStart int `json:"_domContentLoadedEventStart"`
-						OnLoad                     int `json:"onLoad"`
-						LoadEventStart             int `json:"loadEventStart"`
-						DOMLoading                 int `json:"_domLoading"`
-						OnContentLoad              int `json:"onContentload"`
-						DOMInteractive             int `json:"_domInteractive"`
-						DOMContentLoadedEventEnd   int `json:"_domContentLoadedEventEnd"`
-						DOMComplete                int `json:"_domComplete"`
-					} `json:"pageTimings"`
-					Title string `json:"title"`
-				} `json:"pages"`
-				Browser struct {
+					Entries []struct {
+						WSID    int      `json:"_wsid"`
+						Cache   struct{} `json:"cache"`
+						Pageref string   `json:"pageref"`
+						Request struct {
+							BodySize int           `json:"bodySize"`
+							Cookies  []interface{} `json:"cookies"`
+							Headers  []struct {
+								Name  string `json:"name"`
+								Value string `json:"value"`
+							} `json:"headers"`
+							HeadersSize int           `json:"headersSize"`
+							HTTPVersion string        `json:"httpVersion"`
+							Method      string        `json:"method"`
+							QueryString []interface{} `json:"queryString"`
+							URL         string        `json:"url"`
+						} `json:"request"`
+						Response struct {
+							BodySize int `json:"bodySize"`
+							Content  struct {
+								MimeType string `json:"mimeType"`
+								Size     int    `json:"size"`
+							} `json:"content"`
+							Cookies []struct {
+								Expires string `json:"expires"`
+								Name    string `json:"name"`
+								Path    string `json:"path"`
+								Value   string `json:"value"`
+							} `json:"cookies"`
+							Headers []struct {
+								Name  string `json:"name"`
+								Value string `json:"value"`
+							} `json:"headers"`
+							HeadersSize int    `json:"headersSize"`
+							HTTPVersion string `json:"httpVersion"`
+							RedirectURL string `json:"redirectURL"`
+							Status      int    `json:"status"`
+							StatusText  string `json:"statusText"`
+						} `json:"response"`
+						ServerIPAddress string `json:"serverIPAddress"`
+						StartedDateTime string `json:"startedDateTime"`
+						Time            int    `json:"time"`
+						Timings         struct {
+							Blocked int `json:"blocked"`
+							Connect int `json:"connect"`
+							DNS     int `json:"dns"`
+							Receive int `json:"receive"`
+							Send    int `json:"send"`
+							Ssl     int `json:"ssl"`
+							Wait    int `json:"wait"`
+						} `json:"timings"`
+					} `json:"entries"`
+					Location string `json:"location"`
+					Pages    []struct {
+						ID          string `json:"id"`
+						PageTimings struct {
+							DOMComplete                int `json:"_domComplete"`
+							DOMContentLoadedEventEnd   int `json:"_domContentLoadedEventEnd"`
+							DOMContentLoadedEventStart int `json:"_domContentLoadedEventStart"`
+							DOMInteractive             int `json:"_domInteractive"`
+							DOMLoading                 int `json:"_domLoading"`
+							LoadEventEnd               int `json:"_loadEventEnd"`
+							LoadEventStart             int `json:"_loadEventStart"`
+							OnContentLoad              int `json:"onContentLoad"`
+							OnLoad                     int `json:"onLoad"`
+						} `json:"pageTimings"`
+						StartedDateTime string `json:"startedDateTime"`
+						Title           string `json:"title"`
+					} `json:"pages"`
 					Version string `json:"version"`
-					Name    string `json:"name"`
-				} `json:"browser"`
+				} `json:"log"`
 			} `json:"har"`
+			MonitorID  string `json:"monitorId"`
+			Screenshot string `json:"screenshot"`
 		} `json:"data"`
+		Duration   string        `json:"duration"`
+		Items      []interface{} `json:"items"`
+		Location   string        `json:"location"`
+		Offset     int           `json:"offset"`
+		ScriptInfo struct {
+			LineNumber    interface{} `json:"lineNumber"`
+			ScriptBody    string      `json:"scriptBody"`
+			ScriptLink    string      `json:"scriptLink"`
+			ScriptName    string      `json:"scriptName"`
+			ScriptVersion string      `json:"scriptVersion"`
+		} `json:"scriptInfo"`
+		ScriptName string `json:"scriptName"`
+		StartTime  string `json:"startTime"`
+		Status     string `json:"status"`
+		StatusCode int    `json:"statusCode"`
+		Total      int    `json:"total"`
 	} `json:"data"`
 }
