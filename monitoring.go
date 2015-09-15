@@ -174,7 +174,7 @@ func (m *Monitoring) RawSampleData(monitorID, sampleID string) (RawSampleDataRes
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
 		return RawSampleDataResponse{}, err
 	}
-	return RawSampleDataResponse{}, nil
+	return data, nil
 }
 
 // AggregateSampleData retrieves the aggregated sample information for a given period
