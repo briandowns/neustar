@@ -200,6 +200,123 @@ type SummaryDataResponse struct {
 
 // CreateMonitorResponse contains the response from a call to create a new monitor
 type CreateMonitorResponse struct {
-	ID      string `json:"bd220e6655d311e5ab659848e167c3b7"`
-	Created string `json:"2015-09-08T02:45:59.00"`
+	ID      string `json:"id"`
+	Created string `json:"created"`
+}
+
+// RawSampleDataResponse holds the response given when the RawSampleData function is
+// called
+type RawSampleDataResponse struct {
+	Data struct {
+		Status         string `json:"status"`
+		BytesReceived  int    `json:"bytesReceived"`
+		AgentIPAddress string `json:"agentIpAddress"`
+		Browser        string `json:""`
+		ScriptInfo     struct {
+			LineNumber int    `json:"lineNumber"`
+			ScriptName string `json:"scriptName"`
+			ScriptBody string `json:"scriptBody"`
+		} `json:"scriptInfo"`
+		StatusCode int      `json:"statusCode"`
+		Items      []string `json:"items"`
+		ScriptName string   `json:"scriptName"`
+		Location   string   `json:"location"`
+		StartTime  string   `json:"startTime"`
+		Offset     int      `json:"offset"`
+		Duration   string   `json:"duration"`
+		Total      int      `json:"total"`
+		Data       struct {
+			MonitorID  string `json:"monitorId"`
+			ScreenShot string `json:"screenshot"`
+			HAR        struct {
+				Log struct {
+					Creator struct {
+						Version string `json:"version"`
+						Name    string `json:"name"`
+					} `json:"creator"`
+				} `json:"log"`
+				Steps []struct {
+					TimePaused     int           `json:"timePaused"`
+					NameValuePairs []interface{} `json:"nameValuePairs"`
+					Label          string        `json:"label"`
+					Step           int           `json:"step"`
+					StartTime      string        `json:"startTime"`
+					Duration       int           `json:"duration"`
+				} `json:"_steps"`
+				Version  string `json:"version"`
+				Location string `json:"location"`
+				Entries  []struct {
+					ServerIPAddress string `json:"serverIpAddress"`
+					PageRef         string `json:"pageref"`
+					StartedDatetime string `json:"startedDateTime"`
+					WSID            int    `json:"_wsid"`
+					Request         struct {
+						Cookies     []interface{} `json:"cookies"`
+						URL         string        `json:"url"`
+						QueryString []interface{} `json:"queryString"`
+						Headers     []struct {
+							Name  string `json:"name"`
+							Value string `json:"value"`
+						} `json:"headers"`
+						HeaderSize  int    `json:"headerSize"`
+						HTTPVersion string `json:"httpVersion"`
+						Method      string `json:"method"`
+						BodySize    int    `json:"bodySize"`
+					} `json:"request"`
+					Timings struct {
+						Receive int `json:"receive"`
+						Send    int `json:"send"`
+						SSL     int `json:"ssl"`
+						Connect int `json:"connect"`
+						DNS     int `json:"dns"`
+						Wait    int `json:"wait"`
+						Blocked int `json:"blocked"`
+					} `json:"timings"`
+					Cache    struct{} `json:"cache"`
+					Time     int      `json:"time"`
+					Response struct {
+						Status  int `json:"status"`
+						Cookies []struct {
+							Path    string `json:"path"`
+							Expires string `json:"expires"`
+							Name    string `json:"name"`
+							Value   string `json:"value"`
+						} `json:"cookies"`
+						StatusText string `json:"statusText"`
+						Content    struct {
+							MimeType string `json:"mimeType"`
+							Size     int    `json:"size"`
+						} `json:"content"`
+						Headers []struct {
+							Name  string `json:"name"`
+							Value string `json:"value"`
+						} `json:"headers"`
+						HeaderSize  int    `json:"headerSize"`
+						RedirectURL string `json:"redirectURL"`
+						HTTPVersion int    `json:"httpVersion"`
+						BodySize    int    `json:"bodySize"`
+					} `json:"response"`
+				} `json:"entries"`
+				Pages []struct {
+					ID              string `json:"id"`
+					StartedDateTime string `json:"startedDateTime"`
+					PageTimings     []struct {
+						DOMContentLoadedEventStart int `json:"_domContentLoadedEventStart"`
+						OnLoad                     int `json:"onLoad"`
+						LoadEventStart             int `json:"loadEventStart"`
+						DOMLoading                 int `json:"_domLoading"`
+						OnContentLoad              int `json:"onContentload"`
+						DOMInteractive             int `json:"_domInteractive"`
+						DOMContentLoadedEventEnd   int `json:"_domContentLoadedEventEnd"`
+						DOMComplete                int `json:"_domComplete"`
+					} `json:"pageTimings"`
+					Title string `json:"title"`
+				} `json:"pages"`
+				Browser struct {
+					Version string `json:"version"`
+					Name    string `json:"name"`
+				} `json:"browser"`
+			} `json:"har"`
+		} `json:"data"`
+	} `json:"data"`
 }

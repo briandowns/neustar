@@ -161,7 +161,21 @@ func (m *Monitoring) Samples() ([]string, error) {
 }
 
 // RawSampleData retrieves the raw, HTTP Archive (HAR) data for a particular sample
-func (m *Monitoring) RawSampleData(monitorID, sampleID string) {}
+func (m *Monitoring) RawSampleData(monitorID, sampleID string) (RawSampleDataResponse, error) {
+	var response *http.Response
+	var data RawSampleDataResponse
+	response, err := http.Get(fmt.Sprintf(
+		"%s%s/%s/sample/%s?apikey=%s&sig=%s",
+		BaseURL, MonitorURI, monitorID, sampleID, m.neustar.Key, m.neustar.DigitalSignature()))
+	if err != nil {
+		return RawSampleDataResponse{}, err
+	}
+	defer response.Body.Close()
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+		return RawSampleDataResponse{}, err
+	}
+	return RawSampleDataResponse{}, nil
+}
 
 // AggregateSampleData retrieves the aggregated sample information for a given period
 // of time. You can choose to aggregate the data for each hour or each day. This is
