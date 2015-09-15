@@ -81,7 +81,7 @@ var RealUserMeasurementsErrorCodes = map[string]string{
 
 // ValidLocation verifies the given location is valid
 func ValidLocation(location string) bool {
-	for _, i := range ValidLocations {
+	for _, i := range Locations {
 		if i == location {
 			return true
 		}
@@ -91,7 +91,7 @@ func ValidLocation(location string) bool {
 
 // ValidLocations is a slice containing all valid locations for scripts
 // and monitors to run from
-var ValidLocations = []string{
+var Locations = []string{
 	"houston",
 	"brisbane",
 	"washingtondc",
