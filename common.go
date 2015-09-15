@@ -39,10 +39,10 @@ func NewNeustar(key, secret string) *Neustar {
 // DigitalSignature creates an MD5 hash of the key, the secret and a timestamp
 func (n *Neustar) DigitalSignature() string {
 	now := time.Now()
-	epoch := now.Unix()
+	unix := now.Unix()
 	data := md5.Sum(
 		[]byte(fmt.Sprintf("%s%s%s",
-			n.Key, n.Secret, strconv.FormatInt(epoch, 10)),
+			n.Key, n.Secret, strconv.FormatInt(unix, 10)),
 		),
 	)
 	return fmt.Sprintf("%x", data)
