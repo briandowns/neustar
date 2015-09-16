@@ -73,3 +73,17 @@ type AggregateSampleParameters struct {
 	// When selected, the data will be aggregated by the selected 'groupBy'
 	GroupBy string `url:"groupBy"`
 }
+
+// SampleRequestParameters holds the required options to pass to the Sample function
+type SampleRequestParameters struct {
+	// An ISO 8601 formatted date string or datetime string representing the start date from which you wish to collect samples.
+	// Examples: 2012-03-02 or 2012-03-01T12:00
+	StartDate string `url:"startDate"`
+
+	// An ISO 8601 formatted date string or datetime string representing the end date from which you wish to collect samples.
+	// Examples: 2012-03-02 or 2012-03-01T12:00
+	EndDate string `url:"endDate"`
+
+	// From which position in the return list you wish to start. At most, 2000 records will be returned.
+	Offset int `url:"offset"`
+}

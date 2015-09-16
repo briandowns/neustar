@@ -70,6 +70,22 @@ type AggregateSampleResponse struct {
 	TP90       int    `json:"tp90"`
 }
 
+// SamplesDataResponse holds a response from a call to the Samples endpoint
+type SamplesDataResponse struct {
+	Data struct {
+		Count int `json:"count"`
+		Items []struct {
+			Status          string `json:"status"`
+			BytesReceived   int    `json:"bytesReceived"`
+			ErrorLineNumber int    `json:"errorLineNumber"`
+			Location        string `json:"location"`
+			StartTime       string `json:"startTime"`
+			Duration        int    `json:"duration"`
+			ID              string `json:"id"`
+		} `json:"items"`
+	} `json:"data"`
+}
+
 // Monitor hold monitoring data
 type Monitor struct {
 	// The ID of the monitor

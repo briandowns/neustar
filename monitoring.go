@@ -22,6 +22,9 @@ const (
 
 	// AggregateURI is the endpoint for aggregate calls
 	AggregateURI = "/aggregate"
+
+	// SamplesURI is the endpoint for sample calls
+	SamplesURI = "/sample"
 )
 
 // MonitorTypes is a slice of valid monitor types
@@ -138,29 +141,6 @@ func (m *Monitoring) Delete(id string) (int, error) {
 	return response.StatusCode, nil
 }
 
-// Samples returns all samples associated to this monitor for a given time period.
-// This data is returned at a high level, which timing for the overall sample. To
-// get the details for the specific sample, call the get raw sample data api. At a
-// maximum, this api will return 2000 samples. If there are more than 2000 results
-// returned, the 'more' field will be set to true and you can make another api call
-// specifying an offset which would be equal to the number of results returned in the
-// first api call plus the offset of that call.
-func (m *Monitoring) Samples() ([]string, error) {
-	var response *http.Response
-	var data map[string]map[string][]string
-	response, err := http.Get(fmt.Sprintf(
-		"%s%s?apikey=%s&sig=%s",
-		BaseURL, MonitorURI, m.neustar.Key, m.neustar.DigitalSignature()))
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, err
-	}
-	return data["data"]["items"], nil
-}
-
 // RawSampleData retrieves the raw, HTTP Archive (HAR) data for a particular sample
 func (m *Monitoring) RawSampleData(monitorID, sampleID string) (RawSampleDataResponse, error) {
 	var response *http.Response
@@ -176,6 +156,33 @@ func (m *Monitoring) RawSampleData(monitorID, sampleID string) (RawSampleDataRes
 		return RawSampleDataResponse{}, err
 	}
 	fmt.Printf("%# v\n", pretty.Formatter(data))
+	return data, nil
+}
+
+// Samples returns all samples associated to this monitor for a given time period.
+// This data is returned at a high level, which timing for the overall sample. To
+// get the details for the specific sample, call the get raw sample data api. At a
+// maximum, this api will return 2000 samples. If there are more than 2000 results
+// returned, the 'more' field will be set to true and you can make another api call
+// specifying an offset which would be equal to the number of results returned in the
+// first api call plus the offset of that call.
+func (m *Monitoring) Samples(monitorID string, srp *SampleRequestParameters) (SamplesDataResponse, error) {
+	var response *http.Response
+	v, err := query.Values(srp)
+	if err != nil {
+		return SamplesDataResponse{}, err
+	}
+	var data SamplesDataResponse
+	response, err = http.Get(fmt.Sprintf(
+		"%s%s/%s%s?%s&apikey=%s&sig=%s",
+		BaseURL, MonitorURI, monitorID, SamplesURI, v.Encode(), m.neustar.Key, m.neustar.DigitalSignature()))
+	if err != nil {
+		return SamplesDataResponse{}, err
+	}
+	defer response.Body.Close()
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+		return SamplesDataResponse{}, err
+	}
 	return data, nil
 }
 
