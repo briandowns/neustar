@@ -46,6 +46,13 @@ type PopSettings struct {
 	Password string `json:"password"`
 }
 
+// SLASettings hols SLA settings
+type SLASettings struct {
+	RunningAvgDuration interface{} `json:"runningAvgDuration"`
+	Uptime             float64     `json:"uptime"`
+	LoadTime           int         `json:"loadtime"`
+}
+
 // AggregateSampleDataResponse holds the return from the API list call
 type AggregateSampleDataResponse struct {
 	Data struct {
@@ -126,7 +133,7 @@ type Monitor struct {
 	Type string `json:"type"`
 
 	SMTPSettings SMTPSettings `json:"smtpSettings"`
-	SLASettings  interface{}  `json:"slaSettings,omitempty"`
+	SLASettings  SLASettings  `json:"slaSettings,omitempty"`
 	DNSSettings  DNSSettings  `json:"dnsSettings,omitempty"`
 	PopSettings  PopSettings  `json:"popSettings,omitempty"`
 	PortSettings PortSettings `json:"portSettings,omitempty"`
