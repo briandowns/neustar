@@ -117,7 +117,7 @@ type Monitor struct {
 	Name string `json:"name"`
 
 	// The time of the last monitoring sample for this monitor
-	LastSampleAt interface{} `json:"lastSampleAt"`
+	LastSampleAt string `json:"lastSampleAt"`
 
 	// Describes whether this monitor is actively monitoring or not
 	Active bool `json:"active"`
