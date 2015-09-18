@@ -1,6 +1,7 @@
 package neustar
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -17,7 +18,7 @@ const (
 // Strikes is a slice of valid strikes
 var Strikes = []int{1, 2, 3}
 
-// NewAlertPolicyParameters
+// NewAlertPolicyParameters holds the parameters needed to pass to the NewAlertPolicy method
 type NewAlertPolicyParameters struct {
 	// Name of the alert policy
 	Name string
@@ -48,7 +49,7 @@ type NewAlertPolicyResponse struct {
 	Strikes int
 }
 
-// ListAlertPoliciesResponse
+// ListAlertPoliciesResponse holds the response from the ListAlertPolicies call
 type ListAlertPoliciesResponse struct {
 	// ID of the alert policy
 	ID string
@@ -76,22 +77,47 @@ type Alerting struct {
 	neustar *Neustar
 }
 
-// Create creates a new Alert policy
-func (a *Alerting) Create() {}
-
-// List retrieves a list of policies ordered by date in descending order.
-func (a *Alerting) List() ([]ScriptingListResponse, int, error) {
-	var response *http.Response
-	var data ScriptDataResponse
-	response, err := http.Get(fmt.Sprintf("%s%s?apikey=%s&sig=%s", BaseURL, AlertURI, a.neustar.Key, a.neustar.DigitalSignature()))
+// NewAlertPolicy creates a new Alert policy
+func (a *Alerting) NewAlertPolicy(napp *NewAlertPolicyParameters) (NewAlertPolicyResponse, error) {
+	buffer, err := json.Marshal(napp)
 	if err != nil {
-		return nil, response.StatusCode, err
+		return NewAlertPolicyResponse{}, err
+	}
+	body := bytes.NewBuffer(buffer)
+	var data NewAlertPolicyResponse
+	request, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, AlertURI, PolicyURI, a.neustar.Key, a.neustar.DigitalSignature()),
+		body)
+	if err != nil {
+		return NewAlertPolicyResponse{}, err
+	}
+	request.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return NewAlertPolicyResponse{}, err
 	}
 	defer response.Body.Close()
 	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
-		return nil, response.StatusCode, err
+		return NewAlertPolicyResponse{}, err
 	}
-	return data.Data.Items, response.StatusCode, nil
+	return data, nil
+}
+
+// ListAlertPolicies retrieves a list of policies ordered by date in descending order.
+func (a *Alerting) ListAlertPolicies() (ListAlertPoliciesResponse, error) {
+	var response *http.Response
+	var data ListAlertPoliciesResponse
+	response, err := http.Get(fmt.Sprintf("%s%s/%s?apikey=%s&sig=%s", BaseURL, AlertURI, PolicyURI, a.neustar.Key, a.neustar.DigitalSignature()))
+	if err != nil {
+		return ListAlertPoliciesResponse{}, err
+	}
+	defer response.Body.Close()
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+		return ListAlertPoliciesResponse{}, err
+	}
+	return data, nil
 }
 
 // ValidStrikes makes sure that the given strike is valid
