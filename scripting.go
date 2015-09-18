@@ -8,14 +8,23 @@ import (
 
 const (
 	// ScriptURI is the endpoint for calls to the scripting API
-	ScriptURI = "alert/1.0"
+	ScriptURI = "script/1.0"
 
 	// PolicyURI is the endpoint for policy calls
-	PolicyURI = "/policy"
-)
+	CreateURI = "/url"
 
-// Strikes is a slice of valid strikes
-var Strikes = []int{1, 2, 3}
+	// AllScripts is the endpoint for AllScripts calls
+	AllScriptsURI = "/AllScripts"
+
+	// ValidSciptsURI is the endpiont for ValidScripts calls
+	ValidSciptsURI = "/ValidScripts"
+
+	// InvalidScriptsURI is the endpiont for ValidScripts calls
+	InvalidScriptsURI = "/InvalidScripts"
+
+	// UploadBodyURI is the endpiont for ValidScripts calls
+	UploadBodyURI = "/upload/body"
+)
 
 // Script holds a representation of a script
 type Script struct {
@@ -120,12 +129,14 @@ func (s *Scripting) List() ([]ScriptingListResponse, int, error) {
 	return data.Data.Items, response.StatusCode, nil
 }
 
-// ValidStrikes makes sure that the given strike is valid
-func ValidStrikes(strike int) bool {
-	for _, i := range Strikes {
-		if i == strike {
-			return true
-		}
-	}
-	return false
-}
+// ListValidTestScripts retrieves a list of valid test scripts
+func (s *Scripting) ListValidTestScripts() {}
+
+// ListInvalidTestScripts retrieves a list of invalid test scripts
+func (s *Scripting) ListInvalidTestScripts() {}
+
+// UploadTestScriptFile
+func (s *Scripting) UploadTestScriptFile() {}
+
+// CloneTestScriptFile
+func (s *Scripting) CloneTestScriptFile() {}
