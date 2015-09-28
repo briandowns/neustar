@@ -48,9 +48,9 @@ type PopSettings struct {
 
 // SLASettings hols SLA settings
 type SLASettings struct {
-	RunningAvgDuration interface{} `json:"runningAvgDuration"`
-	Uptime             float64     `json:"uptime"`
-	LoadTime           float64     `json:"loadtime"`
+	RunningAvgDuration int     `json:"runningAvgDuration"`
+	Uptime             float64 `json:"uptime"`
+	LoadTime           float64 `json:"loadtime"`
 }
 
 // AggregateSampleDataResponse holds the return from the API list call
