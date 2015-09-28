@@ -93,6 +93,12 @@ type SamplesDataResponse struct {
 	} `json:"data"`
 }
 
+// AlertPolicy holds the alert policy data
+type AlertPolicy struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
 // Monitor hold monitoring data
 type Monitor struct {
 	// The ID of the monitor
@@ -100,10 +106,7 @@ type Monitor struct {
 
 	// The ID of the alerting policy associated with this monitor
 	//AlertPolicy interface{} `json:"alertPolicy"`
-	AlertPolicy struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	} `json:"alertPolicy,omitempty"`
+	AlertPolicy AlertPolicy
 
 	// A list of monitoring locations that this monitor is run from
 	Locations []string `json:"locations"`
