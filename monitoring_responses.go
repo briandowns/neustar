@@ -99,7 +99,11 @@ type Monitor struct {
 	ID string `json:"id"`
 
 	// The ID of the alerting policy associated with this monitor
-	AlertPolicy interface{} `json:"alertPolicy"`
+	//AlertPolicy interface{} `json:"alertPolicy"`
+	AlertPolicy struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"alertPolicy,omitempty"`
 
 	// A list of monitoring locations that this monitor is run from
 	Locations []string `json:"locations"`
