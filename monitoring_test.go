@@ -39,17 +39,6 @@ func TestCreate(t *testing.T) {
 // TestList
 func TestList(t *testing.T) {
 	t.Parallel()
-
-	m := NewMonitor(SetupNeustar())
-
-	monitors, err := m.List()
-	if err != nil {
-		t.Error(err)
-	}
-
-	if reflect.TypeOf(monitors).String() != "[]neustar.Monitor" {
-		t.Error("Incorrect data type pointer returned from List function")
-	}
 }
 
 // TestGet
