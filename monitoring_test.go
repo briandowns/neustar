@@ -6,13 +6,13 @@ import (
 	"testing"
 )
 
-func SetupNeustar() *Neustar {
-	return NewNeustar(os.Getenv("NEUSTAR_KEY"), os.Getenv("NEUSTAR_KEY"))
+func setUp() *Neustar {
+	return NewNeustar(os.Getenv("NEUSTAR_KEY"), os.Getenv("NEUSTAR_SECRET"))
 }
 
 // TestNewNeustar
 func TestNewNeustar(t *testing.T) {
-	n := NewNeustar(os.Getenv("NEUSTAR_KEY"), os.Getenv("NEUSTAR_KEY"))
+	n := NewNeustar(os.Getenv("NEUSTAR_KEY"), os.Getenv("NEUSTAR_SECRET"))
 
 	if reflect.TypeOf(n).String() != "*neustar.Neustar" {
 		t.Error("Incorrect data type pointer returned from NewNeustar function")
@@ -23,7 +23,7 @@ func TestNewNeustar(t *testing.T) {
 func TestNewMonitor(t *testing.T) {
 	t.Parallel()
 
-	m := NewMonitor(SetupNeustar())
+	m := NewMonitor(setUp())
 
 	if reflect.TypeOf(m).String() != "*neustar.Monitoring" {
 		t.Error("Incorrect data type pointer returned from NewMonitor function")
@@ -39,11 +39,29 @@ func TestCreate(t *testing.T) {
 // TestList
 func TestList(t *testing.T) {
 	t.Parallel()
+
+	monitor := NewMonitor(setUp())
+
+	_, err := monitor.List()
+	if err != nil {
+		t.Error(err)
+	}
 }
 
 // TestGet
 func TestGet(t *testing.T) {
 	t.Parallel()
+
+	monitor := NewMonitor(setUp())
+
+	monitorIDs := []string{"5a1c2ab6588c11e592489848e1660ab3", "21e85880588d11e5b2309848e1660ab3"}
+
+	for _, monitorID := range monitorIDs {
+		_, err := monitor.Get(monitorID)
+		if err != nil {
+			t.Error(err)
+		}
+	}
 }
 
 // TestUpdate
