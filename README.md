@@ -4,4 +4,8 @@
 
 neustar is a SDK to access and work with the [Neustar API](https://apidocs.wpm.neustar.biz/)
 
-This is still in extreme alpha.  Lots of breaking changes going in and out.
+Current version is stable and has been used in production for the past 7 months.
+
+## Contributing
+
+Any and all contributions are welcome.
